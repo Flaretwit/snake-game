@@ -1,5 +1,3 @@
-import java.awt.Graphics;
-import java.awt.geom.Point2D;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -7,7 +5,7 @@ import java.util.Random;
 public class Snake_Section  {
 	//0 is facing up, 1 is facing east, 2 is facing south, 3 is facing west
 	//(randomly chosen upon snake spawn)
-	int direction;
+		int direction;
 	ArrayList<Point> snakeloc = new ArrayList<Point>();
 	//length will be equal to 4 at beginning of the game
 	int length = snakeloc.size();

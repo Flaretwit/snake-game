@@ -1,13 +1,14 @@
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-public class Gameboard implements Runnable, ActionListener {
+
+import com.sun.glass.events.KeyEvent;
+public class Gameboard implements Runnable, ActionListener, KeyListener {
 	//contains all outside of game functions, help, 
 	Container east = new Container();
 	JButton start = new JButton("Start");
@@ -69,6 +70,40 @@ public class Gameboard implements Runnable, ActionListener {
 				running = false;
 			}
 		}
+	
+		
+	}
+	
+
+	@Override
+	public void keyPressed(java.awt.event.KeyEvent e) {
+		int key = e.getKeyCode();
+		if(key == KeyEvent.VK_U) {
+			run.changeDir(0);
+			System.out.println("WORKING");
+		}
+		if(key == KeyEvent.VK_RIGHT) {
+			run.changeDir(1);
+		}
+		if(key == KeyEvent.VK_D) {
+			run.changeDir(2);
+		}
+		if(key == KeyEvent.VK_LEFT)
+		{
+			run.changeDir(3);
+		}
+		
+	}
+
+	@Override
+	public void keyReleased(java.awt.event.KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyTyped(java.awt.event.KeyEvent e) {
+		// TODO Auto-generated method stub
 		
 	}
 	

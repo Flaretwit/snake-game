@@ -5,6 +5,10 @@ import javax.swing.JPanel;
 import java.awt.Color;
 
 public class Run extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// this will contain the gameboard and track what each grid is
 	final int BLANK = 0;
 	final int FOOD = 1;
@@ -46,7 +50,6 @@ public class Run extends JPanel {
 
 	public void step() {
 		if (!checkDeath()) {
-			System.out.println("Steppipng");
 			moveSnake(snake.getDir());
 			System.out.println("snake length" + snake.snakeloc.size());
 			if(snake.head.getX() == foodloc.getX() && snake.head.getY() == foodloc.getY()) {
@@ -71,6 +74,10 @@ public class Run extends JPanel {
 			g.fillRect(x*40, y*40, 40, 40);
 			
 		}
+	}
+	
+	public void changeDir(int dir) {
+		snake.direction = dir;
 	}
 	
 	// moves the snake body
