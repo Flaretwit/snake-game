@@ -50,22 +50,18 @@ public class Run extends JPanel {
 		//paints food
 		g.fillRect(foodloc.getX()*40, foodloc.getY()*40, 40, 40);
 	}
-
+	//the running of the program.
 	public void step() {
 		if (!checkDeath()) {
 			moveSnake(snake.getDir());
-			if(snake.head.getX() == foodloc.getX() && snake.head.getY() == foodloc.getY()) {
-				placeFood();
-			}
-
+			System.out.println("X: " + snake.head.getX() + "Y: " + snake.head.getY());
 		} else {
-			// quits the game running to false
+			System.out.println("DEAD");
 		}
 
 	}
 	
 	public void paintSnake(Graphics g) {
-		System.out.println("method");
 		g.setColor(Color.BLUE);
 		for(int k = 0; k < snake.snakeloc.size(); k++) {
 			int x = snake.getPoint(k).getX();
@@ -112,7 +108,10 @@ public class Run extends JPanel {
 			if (snake.getPoint(i).getX() == snake.head.getX() || snake.snakeloc.get(i).getX() == snake.head.getY()) {
 				return true;
 			}
-			if (snake.getPoint(i).getX() >= NUMSQUARES || snake.getPoint(i).getX() >= NUMSQUARES) {
+			if (snake.getPoint(i).getX() >= NUMSQUARES || snake.getPoint(i).getY() >= NUMSQUARES) {
+				return true;
+			}
+			if (snake.getPoint(i).getX() < 0 || snake.getPoint(i).getY() < 0) {
 				return true;
 			}
 		}
@@ -120,12 +119,7 @@ public class Run extends JPanel {
 
 	}
 	
-//	public void eatFood() {
-	//	if(snake.head.getX() == foodloc.getX() && snake.head.getY() == foodloc.getY()) {
-	//		snake.snakeloc.add(snakeloc.get)
-	//	}
-//	}
-
+	
 	// places food once it is consumed
 	// also does not place food on the snake
 	public void placeFood() {

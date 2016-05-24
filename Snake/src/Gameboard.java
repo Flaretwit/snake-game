@@ -25,7 +25,9 @@ public class Gameboard implements Runnable, ActionListener, KeyListener {
 
 		east.setLayout(new BorderLayout());
 		east.setSize(800, 200);
-		east.add(start);
+		east.add(start, BorderLayout.NORTH);
+		east.add(stop, BorderLayout.SOUTH);
+		stop.addActionListener(this);
 		start.addActionListener(this);
 		frame.add(east, BorderLayout.EAST);
 		frame.addKeyListener(this);
@@ -47,7 +49,7 @@ public class Gameboard implements Runnable, ActionListener, KeyListener {
 			run.step();
 			frame.repaint();
 			try {
-				Thread.sleep(200);
+				Thread.sleep(500);
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
@@ -76,7 +78,6 @@ public class Gameboard implements Runnable, ActionListener, KeyListener {
 		System.out.println(e.getKeyCode());
 		if (e.getKeyCode() == KeyEvent.VK_UP) {
 			run.changeDir(0);
-			System.out.println("WORKING");
 		}
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			run.changeDir(1);
