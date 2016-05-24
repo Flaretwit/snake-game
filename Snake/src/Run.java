@@ -46,15 +46,16 @@ public class Run extends JPanel {
 			g.drawLine(0, j, 800, j);
 		}
 		paintSnake(g);
+		g.setColor(Color.GREEN);
+		//paints food
+		g.fillRect(foodloc.getX()*40, foodloc.getY()*40, 40, 40);
 	}
 
 	public void step() {
 		if (!checkDeath()) {
 			moveSnake(snake.getDir());
-			System.out.println("snake length" + snake.snakeloc.size());
 			if(snake.head.getX() == foodloc.getX() && snake.head.getY() == foodloc.getY()) {
 				placeFood();
-				
 			}
 
 		} else {
@@ -67,17 +68,15 @@ public class Run extends JPanel {
 		System.out.println("method");
 		g.setColor(Color.BLUE);
 		for(int k = 0; k < snake.snakeloc.size(); k++) {
-			System.out.println("painting snake");
 			int x = snake.getPoint(k).getX();
 			int y = snake.getPoint(k).getY();
-			System.out.println("x" + x + "y" + y);
 			g.fillRect(x*40, y*40, 40, 40);
 			
 		}
 	}
 	
 	public void changeDir(int dir) {
-		snake.direction = dir;
+		snake.setDir(dir);
 	}
 	
 	// moves the snake body
@@ -90,13 +89,13 @@ public class Run extends JPanel {
 		}
 		// moves the head of the snake depending on the snake's direction
 		if (direction == 0) {
-			snake.head.setY(snake.head.getY() + 1);
+			snake.head.setY(snake.head.getY() - 1);
 		}
 		if (direction == 1) {
 			snake.head.setX(snake.head.getX() + 1);
 		}
 		if (direction == 2) {
-			snake.head.setY(snake.head.getY() - 1);
+			snake.head.setY(snake.head.getY() + 1);
 		}
 		if (direction == 3) {
 			snake.head.setX(snake.head.getX() - 1);
@@ -120,6 +119,12 @@ public class Run extends JPanel {
 		return false;
 
 	}
+	
+//	public void eatFood() {
+	//	if(snake.head.getX() == foodloc.getX() && snake.head.getY() == foodloc.getY()) {
+	//		snake.snakeloc.add(snakeloc.get)
+	//	}
+//	}
 
 	// places food once it is consumed
 	// also does not place food on the snake
@@ -138,6 +143,7 @@ public class Run extends JPanel {
 				}
 			}
 		}
+		
 		foodloc.setX(x);
 		foodloc.setY(y);
 		field[x][y] = 1;
