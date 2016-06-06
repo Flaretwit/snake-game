@@ -34,19 +34,23 @@ public class Snake_Section {
 			// if the snake is facing direction 0, which is down in this case
 			// the next snake section is defined as such
 			newPoint.setX(snakeloc.get(snakeloc.size() - 1).getX());
-			newPoint.setY(snakeloc.get(snakeloc.size() - 1).getY() - 1);
+			newPoint.setY(snakeloc.get(snakeloc.size() - 1).getY() + 1);
+			System.out.println("NEWX:" + newPoint.getX() + "NEWY:" + newPoint.getY());
 		}
 		if (direction == 1) {
-			newPoint.setX(snakeloc.get(snakeloc.size() - 1).getX() + 1);
+			newPoint.setX(snakeloc.get(snakeloc.size() - 1).getX() - 1);
 			newPoint.setY(snakeloc.get(snakeloc.size() - 1).getY());
+			System.out.println("NEWX:" + newPoint.getX() + "NEWY:" + newPoint.getY());
 		}
 		if (direction == 2) {
 			newPoint.setX(snakeloc.get(snakeloc.size() - 1).getX());
-			newPoint.setY(snakeloc.get(snakeloc.size() - 1).getY() + 1);
+			newPoint.setY(snakeloc.get(snakeloc.size() - 1).getY() - 1);
+			System.out.println("NEWX:" + newPoint.getX() + "NEWY:" + newPoint.getY());
 		}
 		if (direction == 3) {
-			newPoint.setX(snakeloc.get(snakeloc.size() - 1).getX() - 1);
+			newPoint.setX(snakeloc.get(snakeloc.size() - 1).getX() + 1);
 			newPoint.setY(snakeloc.get(snakeloc.size() - 1).getY());
+			System.out.println("NEWX:" + newPoint.getX() + "NEWY:" + newPoint.getY());
 		}
 		snakeloc.add(newPoint);
 

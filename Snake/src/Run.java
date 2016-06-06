@@ -17,17 +17,39 @@ public class Run extends JPanel {
 	final int WIDTH = 800;
 	final int PIXELS_PER_SQUARE = 40;
 	Snake_Section snake = new Snake_Section();
+	boolean alive = true;
 	final int NUMSQUARES = HEIGHT / PIXELS_PER_SQUARE;
-	//20 squares
+	// 20 squares
 	int[][] field = new int[NUMSQUARES][NUMSQUARES]; // 40 pixels per grid for
 														// now
-	//0 is blank
-	//1 is food
-	//2 is snake
+	// 0 is blank
+	// 1 is food
+	// 2 is snake
 	Point foodloc = new Point();
+	
+	
 
 	public Run() {
 		super();
+		Random random = new Random();
+		int x = random.nextInt(NUMSQUARES);
+		int y = random.nextInt(NUMSQUARES);
+		foodloc.setX(x);
+		foodloc.setY(y);
+		
+	}
+
+	// the running of the program.
+	
+	public synchronized void step() {
+		moveSnake(snake.getDir());
+		checkDeath();
+		ifOnFood();
+		for(int i = 0; i < snake.snakeloc.size(); i++) {
+			System.out.println("SNAKESECTION: " + i + "X: " + snake.getPoint(i).getX()
+					+ " Y: " + snake.getPoint(i).getY());
+		}
+		
 	}
 
 	public void paintComponent(Graphics g) {
@@ -47,34 +69,25 @@ public class Run extends JPanel {
 		}
 		paintSnake(g);
 		g.setColor(Color.GREEN);
-		//paints food
-		g.fillRect(foodloc.getX()*40, foodloc.getY()*40, 40, 40);
+		// paints food
+		//System.out.println("FOODX:" + foodloc.getX() + "FOODY:" + foodloc.getY());
+		g.fillRect(foodloc.getX() * 40, foodloc.getY() * 40, 40, 40);
 	}
-	//the running of the program.
-	public void step() {
-		if (!checkDeath()) {
-			moveSnake(snake.getDir());
-			System.out.println("X: " + snake.head.getX() + "Y: " + snake.head.getY());
-		} else {
-			System.out.println("DEAD");
-		}
 
-	}
-	
 	public void paintSnake(Graphics g) {
 		g.setColor(Color.BLUE);
-		for(int k = 0; k < snake.snakeloc.size(); k++) {
+		for (int k = 0; k < snake.snakeloc.size(); k++) {
 			int x = snake.getPoint(k).getX();
 			int y = snake.getPoint(k).getY();
-			g.fillRect(x*40, y*40, 40, 40);
-			
+			g.fillRect(x * 40, y * 40, 40, 40);
+
 		}
 	}
-	
+
 	public void changeDir(int dir) {
 		snake.setDir(dir);
 	}
-	
+
 	// moves the snake body
 	public void moveSnake(int direction) {
 		// sets the coordinates of each snake_section to the
@@ -96,50 +109,54 @@ public class Run extends JPanel {
 		if (direction == 3) {
 			snake.head.setX(snake.head.getX() - 1);
 		}
-		//updates the field array so that it knows where the snake is. 
-		for(int j = 0; j < snake.length; j++) {
+		// updates the field array so that it knows where the snake is.
+		for (int j = 0; j < snake.length; j++) {
 			field[snake.getPoint(j).getX()][snake.getPoint(j).getX()] = 2;
 		}
 	}
 
-	// checks for snake death by either
-	public boolean checkDeath() {
-		for (int i = 0; i < snake.length; i++) {
-			if (snake.getPoint(i).getX() == snake.head.getX() || snake.snakeloc.get(i).getX() == snake.head.getY()) {
-				return true;
-			}
-			if (snake.getPoint(i).getX() >= NUMSQUARES || snake.getPoint(i).getY() >= NUMSQUARES) {
-				return true;
-			}
-			if (snake.getPoint(i).getX() < 0 || snake.getPoint(i).getY() < 0) {
-				return true;
+	// checks for snake death by either checking if the head has contacted the snake body
+	// or if the head has slammed into a wall
+	//the alive variable is so that gameboard can check it so it can stop the thread
+	public void checkDeath() {
+		for (int i = 1; i < snake.snakeloc.size(); i++) {
+			if (snake.getPoint(i).getX() == snake.head.getX() && snake.snakeloc.get(i).getY() == snake.head.getY()) {
+				alive = false;
+				System.out.println("I: " + i + "POINTX:" + snake.getPoint(i).getX() + "POINTY:" + snake.getPoint(i).getY());
+				System.out.println(("HEADX:" + snake.head.getX() + "POINTY:" + snake.head.getY()));
+				
 			}
 		}
-		return false;
-
+		if (snake.head.getX() >= NUMSQUARES || snake.head.getY() >= NUMSQUARES || snake.head.getX() < 0
+				|| snake.head.getY() < 0) {
+			alive = false;
+		}
 	}
-	
-	
+
 	// places food once it is consumed
 	// also does not place food on the snake
-	public void placeFood() {
-		int x = 0;
-		int y = 0;
-		boolean onSnake = false;
-		Random random = new Random();
-		while (onSnake == true) {
-			onSnake = false;
-			x = random.nextInt(NUMSQUARES);
-			y = random.nextInt(NUMSQUARES);
-			for (int i = 0; i < snake.length; i++) {
-				if (snake.getPoint(i).getX() == x && snake.getPoint(i).getY() == y) {
-					onSnake = true;
+	public void ifOnFood() {
+		if (snake.head.getX() == foodloc.getX() && snake.head.getY() == foodloc.getY()) {
+			snake.addLength(snake.getDir());
+			System.out.println("EATING FOOD");
+			int x = 0;
+			int y = 0;
+			boolean onSnake = true;
+			Random random = new Random();
+			while (onSnake == true) {
+				onSnake = false;
+				x = random.nextInt(NUMSQUARES);
+				y = random.nextInt(NUMSQUARES);
+				for (int i = 0; i < snake.length; i++) {
+					if (snake.getPoint(i).getX() == x && snake.getPoint(i).getY() == y) {
+						onSnake = true;
+					}
 				}
 			}
+
+			foodloc.setX(x);
+			foodloc.setY(y);
+			field[x][y] = 1;
 		}
-		
-		foodloc.setX(x);
-		foodloc.setY(y);
-		field[x][y] = 1;
 	}
 }
