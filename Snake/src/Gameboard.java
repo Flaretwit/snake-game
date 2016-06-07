@@ -5,9 +5,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 public class Gameboard implements Runnable, ActionListener, KeyListener {
@@ -28,6 +31,9 @@ public class Gameboard implements Runnable, ActionListener, KeyListener {
 	Run run = new Run();
 	// ADDED RANDOM COMMENT FOR TESTING
 	boolean running = false;
+
+	// limits number of keypresses to 0?
+	int keypresses = 0;
 
 	public Gameboard() {
 		pause.setEnabled(false);
@@ -51,7 +57,7 @@ public class Gameboard implements Runnable, ActionListener, KeyListener {
 		frame.addKeyListener(this);
 		start.addKeyListener(this);
 		midEast.setLayout(new BorderLayout());
-		subEast.setLayout(new GridLayout(1,2));
+		subEast.setLayout(new GridLayout(1, 2));
 		subEast.add(downDiffi);
 		downDiffi.addActionListener(this);
 		upDiffi.addActionListener(this);
@@ -64,6 +70,9 @@ public class Gameboard implements Runnable, ActionListener, KeyListener {
 		east.add(topEast, BorderLayout.NORTH);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+
+		
 		frame.repaint();
 
 		frame.setResizable(false);
@@ -76,6 +85,7 @@ public class Gameboard implements Runnable, ActionListener, KeyListener {
 
 	public void run() {
 		while (running == true) {
+			keypresses = 0;
 			System.out.println("ALIVE: " + run.alive);
 			checkSnakeDeath();
 			run.step();
@@ -87,13 +97,13 @@ public class Gameboard implements Runnable, ActionListener, KeyListener {
 			}
 		}
 	}
-	
+
 	public void checkSnakeDeath() {
-		if(run.alive == false) {
+		if (run.alive == false) {
 			running = false;
 		}
 	}
-	
+
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(start)) {
 			System.out.println("Started!");
@@ -104,12 +114,11 @@ public class Gameboard implements Runnable, ActionListener, KeyListener {
 				start.setEnabled(false);
 				pause.setEnabled(true);
 				stop.setEnabled(true);
-				
+
 				Thread t = new Thread(this);
 				t.start();
 			}
-		}
-		else if (e.getSource().equals(stop)) {
+		} else if (e.getSource().equals(stop)) {
 			if (running == true) {
 				running = false;
 				start.setEnabled(true);
@@ -117,39 +126,58 @@ public class Gameboard implements Runnable, ActionListener, KeyListener {
 				stop.setEnabled(false);
 				upDiffi.setEnabled(true);
 				downDiffi.setEnabled(true);
+				int n = JOptionPane.showConfirmDialog(
+					    frame,
+					    "Are you sure you want to quit this amazing game of Snake?",
+					    "An Innocent Warning",
+					    JOptionPane.YES_NO_OPTION);
+				System.out.println(n);
+				if(n == 0) {
+					frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+				}
 			}
-		}
-		else if (e.getSource().equals(upDiffi)) {
-			difficulty ++;
+		} else if (e.getSource().equals(upDiffi)) {
+			difficulty++;
 			diffiLabel.setText("Current difficulty: " + difficulty);
-		}
-		else if (e.getSource().equals(downDiffi)) {
+		} else if (e.getSource().equals(downDiffi)) {
 			if (difficulty != 1) {
-				difficulty --;
+				difficulty--;
 				diffiLabel.setText("Current difficulty: " + difficulty);
 			}
-		}
-		else if (e.getSource().equals(pause)) {
-			
-		}
-
+		} else if (e.getSource().equals(pause)) {
+			if (running == true) {
+				running = false;
+				pause.setText("Unpause");
+			} else if(running == false) {
+				running = true;
+				Thread t = new Thread(this);
+				t.start();
+				pause.setText("Pause");
+			}
+		} 
 	}
-	//checks for press of the arrow keys to change the snake's direction
-	
-	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_UP && run.snake.getDir() != 2) {
-			run.changeDir(0);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT&& run.snake.getDir() != 3) {
-			run.changeDir(1);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_DOWN&& run.snake.getDir() != 4) {
-			run.changeDir(2);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_LEFT&& run.snake.getDir() != 1) {
-			run.changeDir(3);
-		}
 
+	// checks for press of the arrow keys to change the snake's direction
+
+	public void keyPressed(KeyEvent e) {
+		if (keypresses == 0) {
+			if (e.getKeyCode() == KeyEvent.VK_UP && run.snake.getDir() != 2) {
+				run.changeDir(0);
+				keypresses++;
+			}
+			if (e.getKeyCode() == KeyEvent.VK_RIGHT && run.snake.getDir() != 3) {
+				run.changeDir(1);
+				keypresses++;
+			}
+			if (e.getKeyCode() == KeyEvent.VK_DOWN && run.snake.getDir() != 4) {
+				run.changeDir(2);
+				keypresses++;
+			}
+			if (e.getKeyCode() == KeyEvent.VK_LEFT && run.snake.getDir() != 1) {
+				run.changeDir(3);
+				keypresses++;
+			}
+		}
 	}
 
 	@Override

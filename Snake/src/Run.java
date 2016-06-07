@@ -25,9 +25,10 @@ public class Run extends JPanel {
 	// 0 is blank
 	// 1 is food
 	// 2 is snake
+	
+	//palyer's score
+	int score = 0;
 	Point foodloc = new Point();
-	
-	
 
 	public Run() {
 		super();
@@ -36,20 +37,20 @@ public class Run extends JPanel {
 		int y = random.nextInt(NUMSQUARES);
 		foodloc.setX(x);
 		foodloc.setY(y);
-		
+
 	}
 
 	// the running of the program.
-	
+
 	public synchronized void step() {
 		moveSnake(snake.getDir());
 		checkDeath();
 		ifOnFood();
-		for(int i = 0; i < snake.snakeloc.size(); i++) {
-			System.out.println("SNAKESECTION: " + i + "X: " + snake.getPoint(i).getX()
-					+ " Y: " + snake.getPoint(i).getY());
+		for (int i = 0; i < snake.snakeloc.size(); i++) {
+			System.out.println(
+					"SNAKESECTION: " + i + "X: " + snake.getPoint(i).getX() + " Y: " + snake.getPoint(i).getY());
 		}
-		
+
 	}
 
 	public void paintComponent(Graphics g) {
@@ -70,7 +71,8 @@ public class Run extends JPanel {
 		paintSnake(g);
 		g.setColor(Color.GREEN);
 		// paints food
-		//System.out.println("FOODX:" + foodloc.getX() + "FOODY:" + foodloc.getY());
+		// System.out.println("FOODX:" + foodloc.getX() + "FOODY:" +
+		// foodloc.getY());
 		g.fillRect(foodloc.getX() * 40, foodloc.getY() * 40, 40, 40);
 	}
 
@@ -85,7 +87,25 @@ public class Run extends JPanel {
 	}
 
 	public void changeDir(int dir) {
-		snake.setDir(dir);
+		switch (dir) {
+		case 0:
+			if (snake.getDir() != 2) {
+				snake.setDir(dir);
+			}
+		case 1:
+			if (snake.getDir() != 3) {
+				snake.setDir(dir);
+			}
+		case 2:
+			if (snake.getDir() != 0) {
+				snake.setDir(dir);
+			}
+		case 3:
+			if (snake.getDir() != 1) {
+				snake.setDir(dir);
+			}
+		}
+
 	}
 
 	// moves the snake body
@@ -115,17 +135,20 @@ public class Run extends JPanel {
 		}
 	}
 
-	// checks for snake death by either checking if the head has contacted the snake body
+	// checks for snake death by either checking if the head has contacted the
+	// snake body
 	// or if the head has slammed into a wall
-	//the alive variable is so that gameboard can check it so it can stop the thread
+	// the alive variable is so that gameboard can check it so it can stop the
+	// thread
 	public void checkDeath() {
 		for (int i = 1; i < snake.snakeloc.size(); i++) {
 			if (snake.getPoint(i).getX() == snake.head.getX() && snake.snakeloc.get(i).getY() == snake.head.getY()) {
 				alive = false;
-				System.out.println("I: " + i + "POINTX:" + snake.getPoint(i).getX() + "POINTY:" + snake.getPoint(i).getY());
+				System.out.println(
+						"I: " + i + "POINTX:" + snake.getPoint(i).getX() + "POINTY:" + snake.getPoint(i).getY());
 				System.out.println(("HEADX:" + snake.head.getX() + "POINTY:" + snake.head.getY()));
-				
-			}
+
+			}	
 		}
 		if (snake.head.getX() >= NUMSQUARES || snake.head.getY() >= NUMSQUARES || snake.head.getX() < 0
 				|| snake.head.getY() < 0) {
@@ -137,7 +160,13 @@ public class Run extends JPanel {
 	// also does not place food on the snake
 	public void ifOnFood() {
 		if (snake.head.getX() == foodloc.getX() && snake.head.getY() == foodloc.getY()) {
-			snake.addLength(snake.getDir());
+			//adds length as if it were on the last segment fo the snake
+			//this gives the impression that the section was spawned and makes it
+			//so it doesn't suddenly explode out of the back of the snake
+			Point newPoint = new Point();
+			newPoint.setX(snake.getPoint(snake.snakeloc.size() -1).getX());
+			newPoint.setY(snake.getPoint(snake.snakeloc.size() -1).getY());
+			snake.snakeloc.add(newPoint);
 			System.out.println("EATING FOOD");
 			int x = 0;
 			int y = 0;
