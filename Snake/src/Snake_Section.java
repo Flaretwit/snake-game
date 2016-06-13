@@ -19,8 +19,6 @@ public class Snake_Section {
 		head.setX(random.nextInt(10) + 5);
 		head.setY(random.nextInt(10) + 5);
 		snakeloc.add(head);
-		System.out.println("Direction" + direction);
-
 		//initializes a snake of length 4
 		for(int i = 0; i < 3; i++) {
 			addLength(direction);
@@ -35,22 +33,18 @@ public class Snake_Section {
 			// the next snake section is defined as such
 			newPoint.setX(snakeloc.get(snakeloc.size() - 1).getX());
 			newPoint.setY(snakeloc.get(snakeloc.size() - 1).getY() + 1);
-			System.out.println("NEWX:" + newPoint.getX() + "NEWY:" + newPoint.getY());
 		}
 		if (direction == 1) {
 			newPoint.setX(snakeloc.get(snakeloc.size() - 1).getX() - 1);
 			newPoint.setY(snakeloc.get(snakeloc.size() - 1).getY());
-			System.out.println("NEWX:" + newPoint.getX() + "NEWY:" + newPoint.getY());
 		}
 		if (direction == 2) {
 			newPoint.setX(snakeloc.get(snakeloc.size() - 1).getX());
 			newPoint.setY(snakeloc.get(snakeloc.size() - 1).getY() - 1);
-			System.out.println("NEWX:" + newPoint.getX() + "NEWY:" + newPoint.getY());
 		}
 		if (direction == 3) {
 			newPoint.setX(snakeloc.get(snakeloc.size() - 1).getX() + 1);
 			newPoint.setY(snakeloc.get(snakeloc.size() - 1).getY());
-			System.out.println("NEWX:" + newPoint.getX() + "NEWY:" + newPoint.getY());
 		}
 		snakeloc.add(newPoint);
 

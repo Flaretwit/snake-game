@@ -14,8 +14,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 public class Gameboard implements Runnable, ActionListener, KeyListener {
-	int difficulty = 1;
+	Run run = new Run();
+	static int difficulty = 1;
 	JFrame frame = new JFrame("Snake (Slither.io)");
+	JFrame scoreboard = new JFrame("Scoreboard");
 	// contains all outside of game functions, help,
 	Container east = new Container();
 	JButton start = new JButton("Start");
@@ -23,16 +25,15 @@ public class Gameboard implements Runnable, ActionListener, KeyListener {
 	Container topEast = new Container();
 	Container midEast = new Container();
 	Container subEast = new Container();
+	JLabel score = new JLabel("Score: " + run.score);
 	JLabel diffiLabel = new JLabel("Current difficulty: " + difficulty);
 	JButton downDiffi = new JButton("-");
 	JButton upDiffi = new JButton("+");
 	JButton pause = new JButton("Pause");
+	boolean paused = false;
+	static boolean running = false;
 
-	Run run = new Run();
-	// ADDED RANDOM COMMENT FOR TESTING
-	boolean running = false;
-
-	// limits number of keypresses to 0?
+	// limits number of keypresses to 1?
 	int keypresses = 0;
 
 	public Gameboard() {
@@ -43,23 +44,28 @@ public class Gameboard implements Runnable, ActionListener, KeyListener {
 		start.setFocusable(false);
 		pause.setFocusable(false);
 		stop.setFocusable(false);
-		frame.setSize(1000, 830);
+		
+		frame.setSize(913, 830);
 		frame.setLayout(new BorderLayout());
 		frame.add(run, BorderLayout.CENTER);
-		topEast.setLayout(new GridLayout(3, 1));
-		east.setLayout(new BorderLayout());
+		
+		topEast.setLayout(new GridLayout(5, 1));
+		east.setLayout(new GridLayout(3,1));
 		east.setSize(800, 200);
 		topEast.add(start);
+		
 		east.add(stop, BorderLayout.SOUTH);
+		
 		stop.addActionListener(this);
 		start.addActionListener(this);
+		
 		frame.add(east, BorderLayout.EAST);
 		frame.addKeyListener(this);
 		start.addKeyListener(this);
 		midEast.setLayout(new BorderLayout());
 		subEast.setLayout(new GridLayout(1, 2));
 		subEast.add(downDiffi);
-		downDiffi.addActionListener(this);
+		downDiffi.addActionListener(this);			
 		upDiffi.addActionListener(this);
 		pause.addActionListener(this);
 		subEast.add(upDiffi);
@@ -67,6 +73,7 @@ public class Gameboard implements Runnable, ActionListener, KeyListener {
 		midEast.add(diffiLabel, BorderLayout.NORTH);
 		topEast.add(midEast);
 		topEast.add(pause);
+		topEast.add(score);
 		east.add(topEast, BorderLayout.NORTH);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -85,9 +92,9 @@ public class Gameboard implements Runnable, ActionListener, KeyListener {
 
 	public void run() {
 		while (running == true) {
+			//updates score
+			score.setText("Score: " + run.score);
 			keypresses = 0;
-			System.out.println("ALIVE: " + run.alive);
-			checkSnakeDeath();
 			run.step();
 			frame.repaint();
 			try {
@@ -98,15 +105,8 @@ public class Gameboard implements Runnable, ActionListener, KeyListener {
 		}
 	}
 
-	public void checkSnakeDeath() {
-		if (run.alive == false) {
-			running = false;
-		}
-	}
-
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(start)) {
-			System.out.println("Started!");
 			if (running == false) {
 				running = true;
 				upDiffi.setEnabled(false);
@@ -119,7 +119,7 @@ public class Gameboard implements Runnable, ActionListener, KeyListener {
 				t.start();
 			}
 		} else if (e.getSource().equals(stop)) {
-			if (running == true) {
+			if (running == true || paused == true) {
 				running = false;
 				start.setEnabled(true);
 				pause.setEnabled(false);
@@ -131,9 +131,11 @@ public class Gameboard implements Runnable, ActionListener, KeyListener {
 					    "Are you sure you want to quit this amazing game of Snake?",
 					    "An Innocent Warning",
 					    JOptionPane.YES_NO_OPTION);
-				System.out.println(n);
 				if(n == 0) {
 					frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+				}
+				else {
+					
 				}
 			}
 		} else if (e.getSource().equals(upDiffi)) {
@@ -148,11 +150,14 @@ public class Gameboard implements Runnable, ActionListener, KeyListener {
 			if (running == true) {
 				running = false;
 				pause.setText("Unpause");
+				paused = true;
+				
 			} else if(running == false) {
 				running = true;
 				Thread t = new Thread(this);
 				t.start();
 				pause.setText("Pause");
+				paused = false;
 			}
 		} 
 	}

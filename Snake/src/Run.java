@@ -1,6 +1,7 @@
 import java.awt.Graphics;
 import java.util.Random;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.Color;
 
@@ -46,19 +47,12 @@ public class Run extends JPanel {
 		moveSnake(snake.getDir());
 		checkDeath();
 		ifOnFood();
-		for (int i = 0; i < snake.snakeloc.size(); i++) {
-			System.out.println(
-					"SNAKESECTION: " + i + "X: " + snake.getPoint(i).getX() + " Y: " + snake.getPoint(i).getY());
-		}
-
 	}
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, getWidth(), getHeight());
-		g.setColor(Color.RED);
-		g.fillRect(800, 0, getWidth(), getHeight());
 		// paints columns lines
 		for (int i = 0; i < WIDTH; i += PIXELS_PER_SQUARE) {
 			g.setColor(Color.RED);
@@ -71,8 +65,6 @@ public class Run extends JPanel {
 		paintSnake(g);
 		g.setColor(Color.GREEN);
 		// paints food
-		// System.out.println("FOODX:" + foodloc.getX() + "FOODY:" +
-		// foodloc.getY());
 		g.fillRect(foodloc.getX() * 40, foodloc.getY() * 40, 40, 40);
 	}
 
@@ -144,15 +136,13 @@ public class Run extends JPanel {
 		for (int i = 1; i < snake.snakeloc.size(); i++) {
 			if (snake.getPoint(i).getX() == snake.head.getX() && snake.snakeloc.get(i).getY() == snake.head.getY()) {
 				alive = false;
-				System.out.println(
-						"I: " + i + "POINTX:" + snake.getPoint(i).getX() + "POINTY:" + snake.getPoint(i).getY());
-				System.out.println(("HEADX:" + snake.head.getX() + "POINTY:" + snake.head.getY()));
-
+				Gameboard.running = false;
+				
 			}	
 		}
 		if (snake.head.getX() >= NUMSQUARES || snake.head.getY() >= NUMSQUARES || snake.head.getX() < 0
 				|| snake.head.getY() < 0) {
-			alive = false;
+			Gameboard.running = false;
 		}
 	}
 
@@ -167,7 +157,6 @@ public class Run extends JPanel {
 			newPoint.setX(snake.getPoint(snake.snakeloc.size() -1).getX());
 			newPoint.setY(snake.getPoint(snake.snakeloc.size() -1).getY());
 			snake.snakeloc.add(newPoint);
-			System.out.println("EATING FOOD");
 			int x = 0;
 			int y = 0;
 			boolean onSnake = true;
@@ -176,7 +165,7 @@ public class Run extends JPanel {
 				onSnake = false;
 				x = random.nextInt(NUMSQUARES);
 				y = random.nextInt(NUMSQUARES);
-				for (int i = 0; i < snake.length; i++) {
+				for (int i = 0; i < snake.snakeloc.size(); i++) {
 					if (snake.getPoint(i).getX() == x && snake.getPoint(i).getY() == y) {
 						onSnake = true;
 					}
@@ -186,6 +175,11 @@ public class Run extends JPanel {
 			foodloc.setX(x);
 			foodloc.setY(y);
 			field[x][y] = 1;
+			
+			
+			//updates score
+			
+			score += 10*Gameboard.difficulty;
 		}
 	}
 }
