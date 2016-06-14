@@ -21,7 +21,8 @@ public class Gameboard implements Runnable, ActionListener, KeyListener {
 	// contains all outside of game functions, help,
 	Container east = new Container();
 	JButton start = new JButton("Start");
-	JButton stop = new JButton("Stop");
+	JButton quit = new JButton("Quit");
+	JButton restart = new JButton("Restart");
 	Container topEast = new Container();
 	Container midEast = new Container();
 	Container subEast = new Container();
@@ -38,48 +39,51 @@ public class Gameboard implements Runnable, ActionListener, KeyListener {
 
 	public Gameboard() {
 		pause.setEnabled(false);
-		stop.setEnabled(false);
+		
 		upDiffi.setFocusable(false);
 		downDiffi.setFocusable(false);
 		start.setFocusable(false);
+		restart.setFocusable(false);
 		pause.setFocusable(false);
-		stop.setFocusable(false);
+		quit.setFocusable(false);
 		
-		frame.setSize(913, 830);
-		frame.setLayout(new BorderLayout());
-		frame.add(run, BorderLayout.CENTER);
 		
-		topEast.setLayout(new GridLayout(5, 1));
-		east.setLayout(new GridLayout(3,1));
-		east.setSize(800, 200);
-		topEast.add(start);
-		
-		east.add(stop, BorderLayout.SOUTH);
-		
-		stop.addActionListener(this);
 		start.addActionListener(this);
-		
-		frame.add(east, BorderLayout.EAST);
-		frame.addKeyListener(this);
-		start.addKeyListener(this);
-		midEast.setLayout(new BorderLayout());
-		subEast.setLayout(new GridLayout(1, 2));
-		subEast.add(downDiffi);
-		downDiffi.addActionListener(this);			
-		upDiffi.addActionListener(this);
+		restart.addActionListener(this);
 		pause.addActionListener(this);
-		subEast.add(upDiffi);
-		midEast.add(subEast, BorderLayout.SOUTH);
-		midEast.add(diffiLabel, BorderLayout.NORTH);
-		topEast.add(midEast);
+		quit.addActionListener(this);
+		upDiffi.addActionListener(this);
+		downDiffi.addActionListener(this);
+		
+		topEast.setLayout(new GridLayout(4,1));
+		topEast.add(start);
+		topEast.add(restart);
 		topEast.add(pause);
-		topEast.add(score);
-		east.add(topEast, BorderLayout.NORTH);
-		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		topEast.add(quit);
+		
+		east.setSize(200, 830);
+		east.setLayout(new BorderLayout());
+		east.add(topEast, BorderLayout.CENTER);
+		
+		subEast.setLayout(new GridLayout(1,2));
+		subEast.add(downDiffi);
+		subEast.add(upDiffi);
+		midEast.setLayout(new GridLayout(3,1));
+		
+		midEast.add(subEast);
+		midEast.add(diffiLabel);
+		midEast.add(score);
+		east.add(midEast, BorderLayout.NORTH);
+
+		frame.setLayout(new BorderLayout());
+		frame.setSize(877, 830);
+		frame.add(east, BorderLayout.EAST);
 		
 
+		frame.add(run, BorderLayout.CENTER);
 		
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.repaint();
 
 		frame.setResizable(false);
@@ -113,17 +117,16 @@ public class Gameboard implements Runnable, ActionListener, KeyListener {
 				downDiffi.setEnabled(false);
 				start.setEnabled(false);
 				pause.setEnabled(true);
-				stop.setEnabled(true);
+				quit.setEnabled(true);
 
 				Thread t = new Thread(this);
 				t.start();
 			}
-		} else if (e.getSource().equals(stop)) {
-			if (running == true || paused == true) {
+		} else if (e.getSource().equals(quit)) {
 				running = false;
 				start.setEnabled(true);
 				pause.setEnabled(false);
-				stop.setEnabled(false);
+				quit.setEnabled(false);
 				upDiffi.setEnabled(true);
 				downDiffi.setEnabled(true);
 				int n = JOptionPane.showConfirmDialog(
@@ -137,7 +140,6 @@ public class Gameboard implements Runnable, ActionListener, KeyListener {
 				else {
 					
 				}
-			}
 		} else if (e.getSource().equals(upDiffi)) {
 			difficulty++;
 			diffiLabel.setText("Current difficulty: " + difficulty);
@@ -159,7 +161,18 @@ public class Gameboard implements Runnable, ActionListener, KeyListener {
 				pause.setText("Pause");
 				paused = false;
 			}
-		} 
+		} else if(e.getSource().equals(restart)) {
+			running = false;
+			int n = JOptionPane.showConfirmDialog(
+				    frame,
+				    "Are you sure you want to restart the game?",
+				    "An Innocent Warning",
+				    JOptionPane.YES_NO_OPTION);
+			if(n == 0) {
+				run = new Run();
+				frame.repaint();
+			}
+		}
 	}
 
 	// checks for press of the arrow keys to change the snake's direction
